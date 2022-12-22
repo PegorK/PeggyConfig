@@ -41,7 +41,7 @@ cred_out = "PC_CREDENTIALS"
 class PeggyConfig:
     #### PRIVATE ####
 
-    def __init__(self, essid=None, show_available_wifi=True, save_credentials=True, pw_protected=False, pw="temp1234"):
+    def __init__(self, essid=None, save_credentials=True, pw_protected=False, pw="temp1234"):
         self.sta_if = network.WLAN(network.STA_IF)
         self.ap_if = network.WLAN(network.AP_IF)
 
@@ -56,7 +56,6 @@ class PeggyConfig:
         self.server_port = 80
         self.dns_port = 53
         self.server_host = "0.0.0.0"
-        self.get_networks = show_available_wifi
         self.save_credentials = save_credentials
         self.available_connections = []
         self.enable_pw = pw_protected
@@ -79,10 +78,11 @@ class PeggyConfig:
         self.ap_if.active(False)
 
     def _do_scan(self):
+        self.available_connections = []
         self.sta_if.active(True)
         wifi_near = self.sta_if.scan()
         for conn in wifi_near:
-            if conn[0] == b'':
+            if (conn[0] == b'') or (conn[0].decode() == self.essid):
                 continue
             self.available_connections.append(conn[0].decode('utf-8'))
             
@@ -136,8 +136,6 @@ class PeggyConfig:
                 print(e)
 
     async def _web_server(self):
-        html = open('index.html','r')
-        html = html.read()
         loadPage = False
         postRcvd = False
         while True: #Try & Except for creating socket.
@@ -177,7 +175,7 @@ class PeggyConfig:
                         loadPage = True
                         isValid = True
                     elif line == b'GET /AvailableWifi HTTP/1.1\r\n':
-                        print("availablewifi")
+                        self._do_scan()
                         cl.send(";".join(self.available_connections))
                         loadPage = False
                         isValid = True
@@ -186,6 +184,7 @@ class PeggyConfig:
                         isValid = True
                         postRcvd = True
                     if isValid == False:
+                        cl.close()
                         continue
                     cl_file = cl.makefile('rwb', 0)
                     while True:
@@ -263,21 +262,17 @@ class PeggyConfig:
         
     def _clean_up(self):
         try:
+            self._dinit_ap()
             self.dns_server.stop()
             self.dns_server.cancel()
             self.socket.close()
             self.http_server.stop()
             self.http_server.cancel()
-            self._dinit_ap()
         except:
             print("Error Cleaning Up")
 
     #### PUBLIC ####
     def doConfig(self):
-        if self.get_networks == True:
-            self._do_scan()
-            time.sleep(1)
-
         self._init_ap()
         self._run_catchall()
         self._run_server()
