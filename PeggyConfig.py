@@ -66,6 +66,7 @@ class PeggyConfig:
     def _init_ap(self):
         print("Initializing Access Point.")
         self.ap_if.active(True)
+        time.sleep(0.5)
         if self.enable_pw:
             self.ap_if.config(essid=self.essid, authmode=network.AUTH_WPA_WPA2_PSK, password=self.pw) 
         else:
@@ -80,6 +81,7 @@ class PeggyConfig:
     def _do_scan(self):
         self.available_connections = []
         self.sta_if.active(True)
+        time.sleep(0.5)
         wifi_near = self.sta_if.scan()
         for conn in wifi_near:
             if (conn[0] == b'') or (conn[0].decode() == self.essid):
