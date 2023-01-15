@@ -31,7 +31,9 @@ REDIRECT_URLS = [
     b'GET /redirect HTTP/1.1\r\n',
     b'GET /connecttest.txt HTTP/1.1\r\n',
     b'GET /generate_204 HTTP/1.1\r\n',
-    b'GET /generate204 HTTP/1.1\r\n'
+    b'GET /generate204 HTTP/1.1\r\n',
+    b'GET /hotspot-detect.html HTTP/1.0\r\n',
+    b'GET /hotspot-detect.html HTTP/1.1\r\n'
 ]
 
 html_file = open('index_min.html','r')
@@ -160,6 +162,7 @@ class PeggyConfig:
                         yield core._io_queue.queue_read(s)
                     except core.CancelledError:
                         # Shutdown server
+                        print("Server Error")
                         s.close()
                         return
                     try:
@@ -168,7 +171,7 @@ class PeggyConfig:
                         # Ignore a failed accept
                         continue
                     cl_file = cl.makefile('rwb', 0)
-                    time.sleep(0.1)
+                    time.sleep(0.2)
                     line = cl_file.readline()
                     response = None
                     isValid = False
