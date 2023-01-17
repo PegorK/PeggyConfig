@@ -161,10 +161,8 @@ class PeggyConfig:
         try:
             self._dinit_ap()
             self.dns_server.stop()
-            self.dns_server.cancel()
             self.socket.close()
             self.http_server.stop()
-            self.http_server.cancel()
         except Exception as e:
             print(e)
 
@@ -174,4 +172,3 @@ class PeggyConfig:
         self._run_catchall()
         self._run_server()
         return self.success
-
