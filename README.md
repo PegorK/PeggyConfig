@@ -8,11 +8,12 @@
 <b>PeggyConfig</b> is a captive portal style easy to use network configuration tool for MicroPython IoT projects based on the ESP32 microcontroller.
 
 <br>
+<br>
 
 <div align="center">
 
   <img src="images/portal.png" alt="PC Logo" width="900"/>
-  <br><b>Figure 1</b>: PeggyConfig shown in Wi-Fi connections. When selected the user is redirected to the captive portal seen in next 3 pannels from which they can configure the devices Wi-Fi connection.
+  <br><b>Figure 1</b>: PeggyConfig shown in Wi-Fi connections. When selected the user is redirected to the captive portal seen in next 3 panels from which they can configure the devices Wi-Fi connection.
 </div>
 
 ## Installation
