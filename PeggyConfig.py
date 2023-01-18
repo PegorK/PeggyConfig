@@ -172,3 +172,15 @@ class PeggyConfig:
         self._run_catchall()
         self._run_server()
         return self.success
+
+    def doConnect(self):
+        try:
+            if cred_out in os.listdir():
+                f = open(cred_out, "r")
+                credentials = json.loads(f.read())
+                f.close()
+                return self._do_connect(credentials['SSID'], credentials['PASSWORD'])
+            else:
+                return False
+        except Exception as e:
+            print(e)
